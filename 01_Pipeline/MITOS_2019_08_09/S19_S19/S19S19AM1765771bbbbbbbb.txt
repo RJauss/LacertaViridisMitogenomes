@@ -1,0 +1,2 @@
+>S19_S19_AM1765771_bb_bb_bb_bb
+rrnS trnV rrnL trnL2 nad1 trnI -trnQ trnM nad2 trnW -trnA -trnN OL -trnC -trnY cox1 -trnS2 trnD cox2 trnK atp8 atp6 cox3 trnG nad3 trnR nad4l nad4 nad5_1 trnH trnS1 trnL1 nad5_0 -nad6 -trnE cob trnT -trnP OH trnF 

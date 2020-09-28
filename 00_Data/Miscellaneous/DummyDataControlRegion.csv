@@ -1,0 +1,23 @@
+Height,Label,Label_unique,Group
+5,tRNA-Pro,tRNA-Pro,tRNA
+10,35bp tandem repeat,35bp tandem repeat,Repeat
+3,NA,NA-1,NA
+3,TAS1,TAS1,Termination Associated Sequence
+3,perfect Repeat,perfect Repeat 1,Repeat
+3,NA,NA-2,NA
+3,TAS2,TAS2,Termination Associated Sequence
+3,perfect Repeat,perfect Repeat 2,Repeat
+10,NA,NA-3,NA
+2,imperfect Repeat,imperfect Repeat 1,Repeat
+2,NA,NA-4,NA
+2,imperfect Repeat,imperfect Repeat 2,Repeat
+10,NA,NA-5,NA
+3,CSB-1,CSB-1,Conserved Sequence Block
+7,NA,NA-6,NA
+2,11bp insert,11bp insert,Insert
+5,NA,NA-7,NA
+5,CSB-2,CSB-2,Conserved Sequence Block
+2,NA,NA-8,NA
+2,CSB-3,CSB-3,Conserved Sequence Block
+10,NA,NA-9,NA
+5,tRNA-Phe,tRNA-Phe,tRNA
