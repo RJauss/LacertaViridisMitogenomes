@@ -17,5 +17,7 @@ This folder contains the trees and miscellaneous data used for the subsequent an
 
 ### 02 Visualisation
 This is a collection of several scripts neccessary for the visualisation of the phylogeny, biogeography and sequence motif evolution:
-- **[Plot the phylogenetic tree and project it on a geographic map](02_Visualisation/Tree_TreeToMap.md)**
-- 
+- **[Plot the phylogenetic tree](02_Visualisation/Readme.md#plot-phylogram-with-ggtree)** and **[project it on a geographic map](02_Visualisation/Readme.md#plot-phylogeny-projected-on-map)**
+- **[Project the pairwise distance in a heatmap](02_Visualisation/Readme.md#pairwise-distance-heatmap)**
+- **[Visualise the mitochondrial control region](02_Visualisation/Readme.md#control-region-visualisation)**
+- **[Plot the sequence motif evolution](02_Visualisation/Readme.md#motif-evolution)**
