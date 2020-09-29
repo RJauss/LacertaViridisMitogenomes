@@ -337,7 +337,7 @@ distmat_melted$HeatmapValue = ifelse(distmat_melted$value > 8.5,
                                      8.5, distmat_melted$value)
 
 # get rectangle positions for each lineage
-rectdata = data.frame(Lineage = c("Lacerta viridis", 
+rectdata = data.frame(Clade = c("Lacerta viridis", 
                                     "Lacerta viridis (Turkey)", 
                                     "Lacerta bilineata", 
                                     "Adriatic clade", 
@@ -345,20 +345,20 @@ rectdata = data.frame(Lineage = c("Lacerta viridis",
                       xminval = 0, xmaxval = 0, 
                       yminval = 0, ymaxval = 0)
 
-rectdata[rectdata$Lineage == "Lacerta viridis", "xminval"] = min(which(grepl("Lv_(?!.*TR)", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
-rectdata[rectdata$Lineage == "Lacerta viridis", "xmaxval"] = max(which(grepl("Lv_(?!.*TR)", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
+rectdata[rectdata$Clade == "Lacerta viridis", "xminval"] = min(which(grepl("Lv_(?!.*TR)", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
+rectdata[rectdata$Clade == "Lacerta viridis", "xmaxval"] = max(which(grepl("Lv_(?!.*TR)", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
 
-rectdata[rectdata$Lineage == "Lacerta viridis (Turkey)", "xminval"] = min(which(grepl("Lv_TR", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
-rectdata[rectdata$Lineage == "Lacerta viridis (Turkey)", "xmaxval"] = max(which(grepl("Lv_TR", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
+rectdata[rectdata$Clade == "Lacerta viridis (Turkey)", "xminval"] = min(which(grepl("Lv_TR", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
+rectdata[rectdata$Clade == "Lacerta viridis (Turkey)", "xmaxval"] = max(which(grepl("Lv_TR", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
 
-rectdata[rectdata$Lineage == "Lacerta bilineata", "xminval"] = min(which(grepl("Lb_", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
-rectdata[rectdata$Lineage == "Lacerta bilineata", "xmaxval"] = max(which(grepl("Lb_", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
+rectdata[rectdata$Clade == "Lacerta bilineata", "xminval"] = min(which(grepl("Lb_", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
+rectdata[rectdata$Clade == "Lacerta bilineata", "xmaxval"] = max(which(grepl("Lb_", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
 
-rectdata[rectdata$Lineage == "Adriatic clade", "xminval"] = min(which(grepl("AL_", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
-rectdata[rectdata$Lineage == "Adriatic clade", "xmaxval"] = max(which(grepl("AL_", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
+rectdata[rectdata$Clade == "Adriatic clade", "xminval"] = min(which(grepl("AL_", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
+rectdata[rectdata$Clade == "Adriatic clade", "xmaxval"] = max(which(grepl("AL_", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
 
-rectdata[rectdata$Lineage == "Outgroups", "xminval"] = min(which(grepl("[KN]C", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
-rectdata[rectdata$Lineage == "Outgroups", "xmaxval"] = max(which(grepl("[KN]C", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
+rectdata[rectdata$Clade == "Outgroups", "xminval"] = min(which(grepl("[KN]C", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
+rectdata[rectdata$Clade == "Outgroups", "xmaxval"] = max(which(grepl("[KN]C", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
 
 rectdata$yminval = rectdata$xminval
 rectdata$ymaxval = rectdata$xmaxval
@@ -375,7 +375,7 @@ d = ggplot(distmat_melted) +
   #          size = 2.5, na.rm = T) +
   geom_rect(data = rectdata, aes(xmin = xminval, xmax = xmaxval, 
                                  ymin = yminval, ymax = ymaxval, 
-                                 color = Lineage), 
+                                 color = Clade), 
             fill = NA, size = 2) +
   scale_fill_viridis(option = "cividis", na.value = "white", direction = -1, 
                      breaks = seq(0, 8, by = 2), 
