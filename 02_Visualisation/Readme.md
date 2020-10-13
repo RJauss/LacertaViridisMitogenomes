@@ -243,6 +243,141 @@ g
 
 ![](Readme_files/figure-markdown_github/Plot%20regular%20tree-1.png)
 
+Plot Bayes Tree
+---------------
+
+Now we do the same for the tree calculated with MrBayes.
+
+``` r
+Bayes_Tree_phylo = read.tree("../00_Data/Trees/MrBayes_Nucleotide_Phylogram.nwk")
+Bayes_Tree_clado = read.tree("../00_Data/Trees/MrBayes_Nucleotide_Cladogram.nwk")
+
+# sort tip labels so they are in the same order as in the phylo.to.map object
+Bayes_Tree_phylo = ape::rotateConstr(Bayes_Tree_phylo,
+                                     rev(obj$tree$tip.label))
+Bayes_Tree_clado = ape::rotateConstr(Bayes_Tree_clado,
+                                     rev(obj$tree$tip.label))
+
+colo_Bayes = rep("x", length(Bayes_Tree_phylo$tip.label))
+for (i in seq(1:length(Bayes_Tree_phylo$tip.label))){
+  if (grepl("Lv_TR", Bayes_Tree_phylo$tip.label[i])){
+    colo_Bayes[i] = viridis(4, end = 0.9)[4]
+  } else if (grepl("Lv", Bayes_Tree_phylo$tip.label[i])) {
+    colo_Bayes[i] = viridis(4, end = 0.9)[3]
+  } else if (grepl("Lb", Bayes_Tree_phylo$tip.label[i])) {
+    colo_Bayes[i] = viridis(4, end = 0.9)[1]
+  } else if (grepl("AL", Bayes_Tree_phylo$tip.label[i])) {
+    colo_Bayes[i] = viridis(4, end = 0.9)[2]
+  } else {
+    colo_Bayes[i] = NA_character_
+  }
+}
+colo_Bayes[is.na(colo_Bayes)] = "black"
+
+g_Bayes = ggtree(Bayes_Tree_phylo, size = 1.1) + 
+  geom_tiplab(align = T, hjust = 1, linetype = "dotted", 
+              fontface = "bold", offset = 0.2, 
+              geom = "label", color = colo_Bayes, fill = "white", 
+              family = "DejaVu Sans Mono", size = 4.5) + 
+  geom_nodepoint(aes(color = as.numeric(label)), size = 4.5) + 
+  scale_color_viridis_c(option = "cividis", limits = c(0, 1), 
+                        direction = -1, name = "Posterior\nProbability", 
+                        na.value = NA) +
+  geom_cladelabel(node = 28, extend = 1, 
+                  label = expression(bold("Outgroups")), align = T, 
+                  geom = "label", fill = "white", 
+                  offset = 0.3, barsize = 2, 
+                  family = "DejaVu Sans") +
+  geom_cladelabel(node = 46, extend = 0.5, 
+                  label = expression(bold(atop(paste(bolditalic("Lacerta viridis")), paste("(Turkey)")))), 
+                  align = T, 
+                  geom = "label", fill = viridis(4, end = 0.9)[4], 
+                  color = c(viridis(4, end = 0.9)[4], "white"), 
+                  offset = 0.3, parse = T, barsize = 2, 
+                  family = "DejaVu Sans") + 
+  geom_cladelabel(node = 33, extend = 0.25, 
+                  label = 'bolditalic("Lacerta viridis")', align = T, 
+                  geom = "label", fill = viridis(4, end = 0.9)[3], 
+                  color = c(viridis(4, end = 0.9)[3], "white"), 
+                  offset = 0.3, parse = T, barsize = 2, 
+                  family = "DejaVu Sans") + 
+  geom_cladelabel(node = 16, extend = 1.5, 
+                  label = expression(bold("Adriatic clade")), align = T, 
+                  geom = "label", fill = viridis(4, end = 0.9)[2], 
+                  color = c(viridis(4, end = 0.9)[2], "white"), 
+                  offset = 0.3, barsize = 2, 
+                  family = "DejaVu Sans") + 
+  geom_cladelabel(node = 42, extend = 1, 
+                  label = 'bolditalic("Lacerta bilineata")', align = T, 
+                  geom = "label", fill = viridis(4, end = 0.9)[1], 
+                  color = c(viridis(4, end = 0.9)[1], "white"), 
+                  offset = 0.3, parse = T, barsize = 2, 
+                  family = "DejaVu Sans") + 
+  xlim(c(-0.05, 1.25)) +
+  scale_y_reverse()  + 
+  theme_tree() +
+  theme(legend.position = c(0.1, 0.4), 
+        legend.text = element_text(size = 16), 
+        legend.title = element_text(face = "bold", size = 18, 
+                  family = "DejaVu Sans")) +
+  geom_treescale(x = 0, y = -7.5, width = 0.1)
+
+
+ggsave(plot = g_Bayes, filename = "BayesTree.pdf", device = cairo_pdf, 
+       width = 8.5, height = 8.5, dpi = 300, units = "in")
+ggsave(plot = g_Bayes, filename = "BayesTree.png", device = "png", 
+       width = 8.5, height = 8.5, dpi = 300)
+
+g_Bayes_clado = ggtree(Bayes_Tree_clado, size = 1.1) + 
+  geom_tiplab(align = T, hjust = 1, linetype = "dotted", 
+              fontface = "bold", offset = 5, 
+              geom = "label", color = colo_Bayes, fill = "white", 
+              family = "DejaVu Sans Mono", size = 4.5) + 
+  geom_nodepoint(aes(color = as.numeric(label)), 
+                 size = 4.5, show.legend = F) + 
+  scale_color_viridis_c(option = "cividis", limits = c(0, 1), 
+                        direction = -1, name = "Posterior\nProbability", 
+                        na.value = NA) +
+  geom_cladelabel(node = 28, extend = 1, 
+                  label = expression(bold("Outgroups")), align = T, 
+                  geom = "label", fill = "white", 
+                  offset = 5.3, barsize = 2, 
+                  family = "DejaVu Sans") +
+  geom_cladelabel(node = 46, extend = 0.5, 
+                  label = expression(bold(atop(paste(bolditalic("Lacerta viridis")), paste("(Turkey)")))), 
+                  align = T, 
+                  geom = "label", fill = viridis(4, end = 0.9)[4], 
+                  color = c(viridis(4, end = 0.9)[4], "white"), 
+                  offset = 5.3, parse = T, barsize = 2, 
+                  family = "DejaVu Sans") + 
+  geom_cladelabel(node = 33, extend = 0.25, 
+                  label = 'bolditalic("Lacerta viridis")', align = T, 
+                  geom = "label", fill = viridis(4, end = 0.9)[3], 
+                  color = c(viridis(4, end = 0.9)[3], "white"), 
+                  offset = 5.3, parse = T, barsize = 2, 
+                  family = "DejaVu Sans") + 
+  geom_cladelabel(node = 16, extend = 1.5, 
+                  label = expression(bold("Adriatic clade")), align = T, 
+                  geom = "label", fill = viridis(4, end = 0.9)[2], 
+                  color = c(viridis(4, end = 0.9)[2], "white"), 
+                  offset = 5.3, barsize = 2, 
+                  family = "DejaVu Sans") + 
+  geom_cladelabel(node = 42, extend = 1, 
+                  label = 'bolditalic("Lacerta bilineata")', align = T, 
+                  geom = "label", fill = viridis(4, end = 0.9)[1], 
+                  color = c(viridis(4, end = 0.9)[1], "white"), 
+                  offset = 5.3, parse = T, barsize = 2, 
+                  family = "DejaVu Sans") + 
+  xlim(c(-0.05, 20.25)) +
+  scale_y_reverse()  + 
+  theme_tree()
+
+ggsave(plot = g_Bayes_clado, filename = "BayesTreeClado.pdf", device = cairo_pdf, 
+       width = 8.5, height = 8.5, dpi = 300, units = "in")
+ggsave(plot = g_Bayes_clado, filename = "BayesTreeClado.png", device = "png", 
+       width = 8.5, height = 8.5, dpi = 300)
+```
+
 Combine Tree and Phylo to Map
 -----------------------------
 
