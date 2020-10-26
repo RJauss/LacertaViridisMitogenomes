@@ -254,7 +254,7 @@ g = ggtree(Nt_Tree_phylo, size = 1.1) +
            label = expression(paste(atop("9004" , 1), atop("_Lv" , 2), atop("_TR" , 3))), 
            parse = T, hjust = 0, family = "DejaVu Sans Mono", size = 5) + 
   annotate("text", x = 0, y = 27.5, 
-           label = "1: Genbank/Tissuecollection ID (if available)\n2: Clade (Lb bilineata, Lv viridis, AL adriatic)\n3: ISO Country Code", 
+           label = "1: Genbank/Tissuecollection ID\n2: Clade (Lb bilineata, Lv viridis, AL adriatic)\n3: ISO Country Code", 
            hjust = 0, family = "DejaVu Sans", size = 5)
 
 
