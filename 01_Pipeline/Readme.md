@@ -28,7 +28,7 @@ Remarks:
 
 ### Folder: Daten
 - contains reference sequences
-- Download the raw data files and put them in this folder
+- contains nextgen raw data files (not yet included, too big: 5,68 GB)
 
 ### Folder: MITOS__fasta_for_mitos
 - contains all final contig fasta files send to MITOS to anotate all gens

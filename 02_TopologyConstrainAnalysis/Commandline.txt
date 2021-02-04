@@ -1,0 +1,5 @@
+## iqtree v.1.6.12
+
+cat RAxML* > TreeList 
+
+iqtree -s raxml_complete.fas -n 0 -z TreeList -zb 10000 -au -nt 46

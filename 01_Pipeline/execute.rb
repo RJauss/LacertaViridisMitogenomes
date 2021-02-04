@@ -46,7 +46,79 @@ gen_hash = {
   },
   'cob' => {
     size: nil
-  }
+  },
+  'rrnS' => {
+    size: nil
+  },
+  'rrnL' => {
+    size: nil
+  },
+  'trnA' => {
+    size: nil
+  },
+  'trnC' => {
+    size: nil
+  },
+  'trnD' => {
+    size: nil
+  },
+  'trnE' => {
+    size: nil
+  },
+  'trnF' => {
+    size: nil
+  },
+  'trnG' => {
+    size: nil
+  },
+  'trnH' => {
+    size: nil
+  },
+  'trnI' => {
+    size: nil
+  },
+  'trnK' => {
+    size: nil
+  },
+  'trnL1' => {
+    size: nil
+  },
+  'trnL2' => {
+    size: nil
+  },
+  'trnM' => {
+    size: nil
+  },
+  'trnN' => {
+    size: nil
+  },
+  'trnP' => {
+    size: nil
+  },
+  'trnQ' => {
+    size: nil
+  },
+  'trnR' => {
+    size: nil
+  },
+  'trnS1' => {
+    size: nil
+  },
+  'trnS2' => {
+    size: nil
+  },
+  'trnT' => {
+    size: nil
+  },
+  'trnV' => {
+    size: nil
+  },
+  'trnW' => {
+    size: nil
+  },
+  'trnY' => {
+    size: nil
+  },
 }
 
 outgroup = 'NC_025320_1'
@@ -208,13 +280,13 @@ FileUtils.mkdir_p "./#{base_dir}_genes/reconstruct"
 Dir.chdir("./#{base_dir}_genes/reconstruct") do
   # --- RAxML (standard) ---
   # run binary
-  system "/bio-bin/standard-RAxML/raxmlHPC-SSE3 -f a -s ../raxml_complete.fas -n lacerta_13_gene_#{bootstraps} -m GTRGAMMA -x 1234 -##{bootstraps} -p 1234 -q ../raxml_partition.txt -o #{outgroup}"
+  system "raxmlHPC-PTHREADS-AVX -f a -s ../raxml_complete.fas -n lacerta_13_gene_#{bootstraps} -m GTRGAMMA -x 1234 -##{bootstraps} -p 1234 -q ../raxml_partition.txt -o #{outgroup} -T 46"
   system "cp RAxML_bipartitions.lacerta_13_gene_#{bootstraps} final_tree_raxml_#{bootstraps}_gtrgamma_#{TAXA_NAMES[outgroup]}.nwk"
   # rename tree
   convert_tree_names("final_tree_raxml_#{bootstraps}_gtrgamma_#{TAXA_NAMES[outgroup]}.nwk", true)
   # --- MrBayes ---
   # run binary
-  system "/bio-bin/MrBayes/mb mrbayes_complete_#{TAXA_NAMES[outgroup]}.nexus"
+  system "mb mrbayes_complete_#{TAXA_NAMES[outgroup]}.nexus"
   # convert nexus tree to wnk
   convert_nexus_to_nwk("mrbayes_complete_#{TAXA_NAMES[outgroup]}.nexus.con.tre")
   # rename tree

@@ -3,7 +3,7 @@
 
 require 'bio'
 
-genes = /(atp6|atp8|cob|cox1|cox2|cox3|nad1|nad2|nad3|nad4l|nad4|nad5_0|nad5_1|nad5|nad6)/
+genes = /(atp6|atp8|cob|cox1|cox2|cox3|nad1|nad2|nad3|nad4l|nad4|nad5_0|nad5_1|nad5|nad6|rrnS|rrnL|trnA|trnC|trnD|trnE|trnF|trnG|trnH|trnI|trnK|trnL1|trnL2|trnM|trnN|trnP|trnQ|trnR|trnS1|trnS2|trnT|trnV|trnW|trnY)/
 
 base_dir = 'MITOS_2019_08_09'
 
@@ -21,8 +21,9 @@ Dir["#{base_dir}/*"].each do |dir|
     gen = header.last.match(genes)[1]
     fasta.definition = File.basename(dir)
     system 'mkdir', '-p', "./#{base_dir}_genes/#{gen}"
-    IO.write("./#{base_dir}_genes/#{gen}/#{fasta.definition}.fas", fasta.to_s)
+    system 'mkdir', '-p', "./#{base_dir}_genes/nad5"
     IO.write("./#{base_dir}_genes/nad5/#{fasta.definition}.fas", fasta.to_s) if gen == 'nad5_0'
+    IO.write("./#{base_dir}_genes/#{gen}/#{fasta.definition}.fas", fasta.to_s)
   end
 end
 
