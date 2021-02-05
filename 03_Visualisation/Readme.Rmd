@@ -24,6 +24,7 @@ library(viridis)
 library(ggtree)
 library(extrafont)
 library(cowplot)
+library(ggpubr)
 
 Nt_Tree = read.tree("../00_Data/Trees/RAxML_Nucleotide_Cladogram.nwk")
 
@@ -143,7 +144,10 @@ cols_aligned = setNames(colo_aligned, obj_aligned$tree$tip.label)
 ## Plot with aligned labels
 
 ```{r Save with aligned labels, message=FALSE, warning=FALSE, results='hide'}
-font_import(prompt = F, pattern = "DejaVuSans")
+path = ifelse(grepl(":", getwd()), 
+              "C:/Users/RJaus/AppData/Local/Microsoft/Windows/Fonts/", 
+              NULL)
+font_import(paths = path, prompt = F, pattern = "DejaVuSans")
 loadfonts()
 #pdf(file="TreetoMap_alignedLabels.pdf", family = "DejaVu Sans Mono")
 png(file="TreetoMap_alignedLabels.png", family = "DejaVu Sans Mono", res = 300, width = 18, height = 16, units = "cm")
@@ -708,3 +712,82 @@ ggsave(plot = tl, filename = "SequenceMotifEvolution.png",
 
 tl  
 ```
+
+## Constrained Topologies
+
+In this chunck we plot the previously analysed constrained topologies and plot their significance next to it. This will later be a Supplementary Figure
+
+```{r Constrained Topologies}
+# read the schematic nwk files
+unconstr = read.tree("../02_TopologyConstrainAnalysis/Unconstrained.nwk")
+VirTurkConstr = read.tree("../02_TopologyConstrainAnalysis/ViridisTurkeyMonophylyConstrain.nwk")
+VirAdriConstr = read.tree("../02_TopologyConstrainAnalysis/ViridisAdriaticMonophylyConstrain.nwk")
+
+g_unconstr = ggtree(unconstr, size = 0.6) + 
+  geom_tiplab() + ggplot2::xlim(0, 10)
+g_VirTurkConstr = ggtree(VirTurkConstr, size = 0.6) + 
+  geom_tiplab() + ggplot2::xlim(0, 10)
+g_VirAdriConstr = ggtree(VirAdriConstr, size = 0.6) + 
+  geom_tiplab() + ggplot2::xlim(0, 10)
+
+ConstrDataFrame = as.data.frame(read.csv("../02_TopologyConstrainAnalysis/ConstrainedDataframeForR.tsv", sep = "\t", header = T))
+g_ConstrDF = ggtexttable(ConstrDataFrame, rows = NULL, 
+                         theme = ttheme("blank", base_size = 11))
+
+combiConstr = ggarrange(g_unconstr, g_VirTurkConstr, g_VirAdriConstr, 
+                        ncol = 3, nrow = 1, labels = "AUTO")
+combiConstrWithDF = ggarrange(combiConstr, g_ConstrDF, 
+                              ncol = 1, nrow = 2)
+
+ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.pdf", 
+       dpi = 300, device = "pdf", width = 16, height = 9, units = "cm")
+ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.png", 
+       dpi = 300, device = "png", width = 16, height = 9, units = "cm")
+ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.jpeg", 
+       dpi = 300, device = "jpeg", width = 16, height = 9, units = "cm")
+```
+
+## Gene saturation test
+
+Here we plot the rate of transitions and transversions against the genetic distance to estimate if our dataset might be saturated
+
+```{r Gene Saturation Test}
+library(ape)
+
+Alignment = read.FASTA("../02_TopologyConstrainAnalysis/raxml_complete.fas")
+
+distdna = dist.dna(Alignment, model="raw")
+distdna_TS = dist.dna(Alignment, model="TS")
+distdna_TV = dist.dna(Alignment, model="TV")
+
+distdnaDF = reshape2::melt(as.matrix(distdna))
+distdna_TSDF = reshape2::melt(as.matrix(distdna_TS))
+distdna_TVDF = reshape2::melt(as.matrix(distdna_TV))
+
+RawDistance = c(distdnaDF$value, distdnaDF$value)
+TS = distdna_TSDF$value
+TS = as.data.frame(TS)
+colnames(TS) = "value"
+TS$Type = "Transitions"
+TV = distdna_TVDF$value
+TV = as.data.frame(TV)
+colnames(TV) = "value"
+TV$Type = "Transversions"
+TSTV = rbind(TS, TV)
+
+DF = cbind(RawDistance, TSTV)
+
+g_TSTV = ggplot(DF, aes(x = RawDistance, y = value, color = Type)) + 
+  geom_point() + 
+  theme_minimal() + 
+  labs(x = "Raw Genetic Distance", 
+       y = "Transitions/Transversions")
+
+ggsave(plot = g_TSTV, filename = "GeneSaturationTest.pdf", device = "pdf", 
+       dpi = 300, width = 16, height = 9, units = "cm")
+ggsave(plot = g_TSTV, filename = "GeneSaturationTest.png", device = "png", 
+       dpi = 300, width = 16, height = 9, units = "cm")
+ggsave(plot = g_TSTV, filename = "GeneSaturationTest.jpeg", device = "jpeg", 
+       dpi = 300, width = 16, height = 9, units = "cm")
+```
+

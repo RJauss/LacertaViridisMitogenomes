@@ -1,12 +1,13 @@
 Tree and tree to map
 ================
 
-Load Data
----------
+## Load Data
 
 First we load the required packages and files.
 
-Note that I use a cladogram which I manually constructed with FigTree. The coordinates for the Outgroups are just fake numbers (coordinates for a lake in Turkmenistan) so they align nicely next to our samples.
+Note that I use a cladogram which I manually constructed with FigTree.
+The coordinates for the Outgroups are just fake numbers (coordinates for
+a lake in Turkmenistan) so they align nicely next to our samples.
 
 ``` r
 rm(list = ls())
@@ -18,19 +19,20 @@ library(viridis)
 library(ggtree)
 library(extrafont)
 library(cowplot)
+library(ggpubr)
 
 Nt_Tree = read.tree("../00_Data/Trees/RAxML_Nucleotide_Cladogram.nwk")
 
 Coordinates = as.matrix(read.csv("../00_Data/Miscellaneous/Coordinates.csv", sep = "\t", header = T, row.names = 1))
 ```
 
-Plot phylogeny projected on a map
-=================================
+# Plot phylogeny projected on a map
 
-Build PhyloToMap object
------------------------
+## Build PhyloToMap object
 
-The xlim and ylim are roughly the border coordinates for Europe. Then we build a color vector based on the lineage (Turkey, viridis, bilineata, Adriatic, outgroup).
+The xlim and ylim are roughly the border coordinates for Europe. Then we
+build a color vector based on the lineage (Turkey, viridis, bilineata,
+Adriatic, outgroup).
 
 ``` r
 obj = phylo.to.map(Nt_Tree, 
@@ -61,10 +63,10 @@ for (i in seq(1:length(Nt_Tree$tip.label))){
 cols = setNames(colo, Nt_Tree$tip.label)
 ```
 
-Plot Phylo to Map
------------------
+## Plot Phylo to Map
 
-Next we plot the object and save it as a PDF, because in the default plot window it looks quite weird.
+Next we plot the object and save it as a PDF, because in the default
+plot window it looks quite weird.
 
 ``` r
 pdf(file="TreetoMap.pdf") 
@@ -82,12 +84,14 @@ plot(obj,
 invisible(dev.off())
 ```
 
-![](Readme_files/figure-markdown_github/Plot%20PhyloToMap-1.png)
+![](Readme_files/figure-gfm/Plot%20PhyloToMap-1.png)<!-- -->
 
-Align labels
-------------
+## Align labels
 
-Thats already very nice, but let's try aligning the tip labels manually. So first we check which label is the longest, and for the shorter labels we paste "·" as many times as required so that in the end all labels have the same number of characters.
+Thats already very nice, but let’s try aligning the tip labels manually.
+So first we check which label is the longest, and for the shorter labels
+we paste “·” as many times as required so that in the end all labels
+have the same number of characters.
 
 ``` r
 obj_aligned = obj
@@ -128,11 +132,13 @@ for (i in seq(1:length(obj_aligned$tree$tip.label))){
 cols_aligned = setNames(colo_aligned, obj_aligned$tree$tip.label)
 ```
 
-Plot with aligned labels
-------------------------
+## Plot with aligned labels
 
 ``` r
-font_import(prompt = F, pattern = "DejaVuSans")
+path = ifelse(grepl(":", getwd()), 
+              "C:/Users/RJaus/AppData/Local/Microsoft/Windows/Fonts/", 
+              NULL)
+font_import(paths = path, prompt = F, pattern = "DejaVuSans")
 loadfonts()
 #pdf(file="TreetoMap_alignedLabels.pdf", family = "DejaVu Sans Mono")
 png(file="TreetoMap_alignedLabels.png", family = "DejaVu Sans Mono", res = 300, width = 18, height = 16, units = "cm")
@@ -156,15 +162,14 @@ legend(43.5, 63, legend = c(expression(italic("bilineata")), "Adriatic",
 invisible(dev.off())
 ```
 
-![](Readme_files/figure-markdown_github/Plot%20with%20aligned%20labels-1.png)
+![](Readme_files/figure-gfm/Plot%20with%20aligned%20labels-1.png)<!-- -->
 
-Plot phylogram with `ggtree`
-============================
+# Plot phylogram with `ggtree`
 
-Load tree
----------
+## Load tree
 
-Now we use `ggplot` and `ggtree` to plot just the tree, with bootstrap support given by colored node points.
+Now we use `ggplot` and `ggtree` to plot just the tree, with bootstrap
+support given by colored node points.
 
 ``` r
 Nt_Tree_phylo = read.tree("../00_Data/Trees/RAxML_Nucleotide_Phylogram.nwk")
@@ -241,10 +246,9 @@ ggsave(plot = g, filename = "Tree.png", device = "png",
 g
 ```
 
-![](Readme_files/figure-markdown_github/Plot%20regular%20tree-1.png)
+![](Readme_files/figure-gfm/Plot%20regular%20tree-1.png)<!-- -->
 
-Plot Bayes Tree
----------------
+## Plot Bayes Tree
 
 Now we do the same for the tree calculated with MrBayes.
 
@@ -378,10 +382,11 @@ ggsave(plot = g_Bayes_clado, filename = "BayesTreeClado.png", device = "png",
        width = 8.5, height = 8.5, dpi = 300)
 ```
 
-Combine Tree and Phylo to Map
------------------------------
+## Combine Tree and Phylo to Map
 
-We can plot the tree and the phylomap next to each other by assigning a function to the r base plot and then use this within the `plot_grid` function.
+We can plot the tree and the phylomap next to each other by assigning a
+function to the r base plot and then use this within the `plot_grid`
+function.
 
 ``` r
 PhyloMap = function(){
@@ -420,12 +425,12 @@ ggsave(plot = combi, filename = "Tree_PhyloToMap_Combined.png",
 combi
 ```
 
-![](Readme_files/figure-markdown_github/combine%20Tree%20and%20PhyloToMap-1.png)
+![](Readme_files/figure-gfm/combine%20Tree%20and%20PhyloToMap-1.png)<!-- -->
 
-Pairwise Distance Heatmap
-=========================
+# Pairwise Distance Heatmap
 
-Plot the uncorrected p-distances as a Heatmap. The distance matrix was generated with the program Geneious.
+Plot the uncorrected p-distances as a Heatmap. The distance matrix was
+generated with the program Geneious.
 
 ``` r
 distmat = as.dist(read.csv("../00_Data/Miscellaneous/pDistanceMatrix.csv", 
@@ -522,12 +527,13 @@ ggsave(plot = d, filename = "Uncorrected-p-Distance_Heatmap.png",
 d
 ```
 
-![](Readme_files/figure-markdown_github/pDistance%20Heatmap-1.png)
+![](Readme_files/figure-gfm/pDistance%20Heatmap-1.png)<!-- -->
 
-Control Region Visualisation
-============================
+# Control Region Visualisation
 
-This visualisation will be a stacked bar chart to outline the structure of the mt control region adapted from [Böhme et al. 2007](https://doi.org/10.1016/j.gene.2007.02.006).
+This visualisation will be a stacked bar chart to outline the structure
+of the mt control region adapted from [Böhme et
+al. 2007](https://doi.org/10.1016/j.gene.2007.02.006).
 
 ``` r
 CRdata = as.data.frame(read.csv("../00_Data/Miscellaneous/DummyDataControlRegion.csv", header = T, 
@@ -578,12 +584,12 @@ ggsave(plot = c, filename = "SchematicOverwiev_Controlregion.png",
 c
 ```
 
-![](Readme_files/figure-markdown_github/Control%20Region%20Visualisation-1.png)
+![](Readme_files/figure-gfm/Control%20Region%20Visualisation-1.png)<!-- -->
 
-Motif Evolution
-===============
+# Motif Evolution
 
-This section covers the plotting of the sequence motiv evolution on the cladogram.
+This section covers the plotting of the sequence motiv evolution on the
+cladogram.
 
 ``` r
 Nt_Tree = ape::rotateConstr(Nt_Tree, rev(obj$tree$tip.label))
@@ -694,4 +700,92 @@ ggsave(plot = tl, filename = "SequenceMotifEvolution.png",
 tl  
 ```
 
-![](Readme_files/figure-markdown_github/MotifEvolution-1.png)
+![](Readme_files/figure-gfm/MotifEvolution-1.png)<!-- -->
+
+## Constrained Topologies
+
+In this chunck we plot the previously analysed constrained topologies
+and plot their significance next to it. This will later be a
+Supplementary Figure
+
+``` r
+# read the schematic nwk files
+unconstr = read.tree("../02_TopologyConstrainAnalysis/Unconstrained.nwk")
+VirTurkConstr = read.tree("../02_TopologyConstrainAnalysis/ViridisTurkeyMonophylyConstrain.nwk")
+VirAdriConstr = read.tree("../02_TopologyConstrainAnalysis/ViridisAdriaticMonophylyConstrain.nwk")
+
+g_unconstr = ggtree(unconstr, size = 0.6) + 
+  geom_tiplab() + ggplot2::xlim(0, 10)
+g_VirTurkConstr = ggtree(VirTurkConstr, size = 0.6) + 
+  geom_tiplab() + ggplot2::xlim(0, 10)
+g_VirAdriConstr = ggtree(VirAdriConstr, size = 0.6) + 
+  geom_tiplab() + ggplot2::xlim(0, 10)
+
+ConstrDataFrame = as.data.frame(read.csv("../02_TopologyConstrainAnalysis/ConstrainedDataframeForR.tsv", sep = "\t", header = T))
+```
+
+    ## Warning in read.table(file = file, header = header, sep = sep, quote
+    ## = quote, : unvollstädige letzte Zeile von readTableHeader in '../
+    ## 02_TopologyConstrainAnalysis/ConstrainedDataframeForR.tsv' gefunden
+
+``` r
+g_ConstrDF = ggtexttable(ConstrDataFrame, rows = NULL, 
+                         theme = ttheme("blank", base_size = 11))
+
+combiConstr = ggarrange(g_unconstr, g_VirTurkConstr, g_VirAdriConstr, 
+                        ncol = 3, nrow = 1, labels = "AUTO")
+combiConstrWithDF = ggarrange(combiConstr, g_ConstrDF, 
+                              ncol = 1, nrow = 2)
+
+ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.pdf", 
+       dpi = 300, device = "pdf", width = 16, height = 9, units = "cm")
+ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.png", 
+       dpi = 300, device = "png", width = 16, height = 9, units = "cm")
+ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.jpeg", 
+       dpi = 300, device = "jpeg", width = 16, height = 9, units = "cm")
+```
+
+## Gene saturation test
+
+Here we plot the rate of transitions and transversions against the
+genetic distance to estimate if our dataset might be saturated
+
+``` r
+library(ape)
+
+Alignment = read.FASTA("../02_TopologyConstrainAnalysis/raxml_complete.fas")
+
+distdna = dist.dna(Alignment, model="raw")
+distdna_TS = dist.dna(Alignment, model="TS")
+distdna_TV = dist.dna(Alignment, model="TV")
+
+distdnaDF = reshape2::melt(as.matrix(distdna))
+distdna_TSDF = reshape2::melt(as.matrix(distdna_TS))
+distdna_TVDF = reshape2::melt(as.matrix(distdna_TV))
+
+RawDistance = c(distdnaDF$value, distdnaDF$value)
+TS = distdna_TSDF$value
+TS = as.data.frame(TS)
+colnames(TS) = "value"
+TS$Type = "Transitions"
+TV = distdna_TVDF$value
+TV = as.data.frame(TV)
+colnames(TV) = "value"
+TV$Type = "Transversions"
+TSTV = rbind(TS, TV)
+
+DF = cbind(RawDistance, TSTV)
+
+g_TSTV = ggplot(DF, aes(x = RawDistance, y = value, color = Type)) + 
+  geom_point() + 
+  theme_minimal() + 
+  labs(x = "Raw Genetic Distance", 
+       y = "Transitions/Transversions")
+
+ggsave(plot = g_TSTV, filename = "GeneSaturationTest.pdf", device = "pdf", 
+       dpi = 300, width = 16, height = 9, units = "cm")
+ggsave(plot = g_TSTV, filename = "GeneSaturationTest.png", device = "png", 
+       dpi = 300, width = 16, height = 9, units = "cm")
+ggsave(plot = g_TSTV, filename = "GeneSaturationTest.jpeg", device = "jpeg", 
+       dpi = 300, width = 16, height = 9, units = "cm")
+```
