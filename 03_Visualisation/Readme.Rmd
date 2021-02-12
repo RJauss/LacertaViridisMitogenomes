@@ -754,40 +754,79 @@ Here we plot the rate of transitions and transversions against the genetic dista
 ```{r Gene Saturation Test}
 library(ape)
 
-Alignment = read.FASTA("../02_TopologyConstrainAnalysis/raxml_complete.fas")
+Alignment = read.dna("../02_TopologyConstrainAnalysis/raxml_complete.fas", 
+                       as.character = TRUE, format = "fasta", as.matrix = T)
 
-distdna = dist.dna(Alignment, model="raw")
-distdna_TS = dist.dna(Alignment, model="TS")
-distdna_TV = dist.dna(Alignment, model="TV")
+# The alignment contains rRNA and tRNA, we use the partition file
+# to exclude these non-coding genes
+Partition = read.csv("../02_TopologyConstrainAnalysis/raxml_partition.txt", 
+                     sep = " ", header = F)
+Partition$Gene = Partition$V2
+Partition$Start = gsub("-.*", "", Partition$V4)
+Partition$End = gsub("[0-9]*-", "", Partition$V4)
+Partition$Fragment = gsub("-", ":", Partition$V4)
+Partition = subset(Partition, select = c("Gene", "Start", "End", "Fragment"))
+Partition = Partition[1:13,]
+A = data.frame(Gene = "All", Start = 1, 
+               End = 11392, Fragment = paste0(1, ":", 11392))
+Partition = rbind(A, Partition)
 
-distdnaDF = reshape2::melt(as.matrix(distdna))
-distdna_TSDF = reshape2::melt(as.matrix(distdna_TS))
-distdna_TVDF = reshape2::melt(as.matrix(distdna_TV))
+extract.sites = function(d, sites){
+return(d[,sites])
+}
 
-RawDistance = c(distdnaDF$value, distdnaDF$value)
-TS = distdna_TSDF$value
-TS = as.data.frame(TS)
-colnames(TS) = "value"
-TS$Type = "Transitions"
-TV = distdna_TVDF$value
-TV = as.data.frame(TV)
-colnames(TV) = "value"
-TV$Type = "Transversions"
-TSTV = rbind(TS, TV)
+for(gene in Partition$Gene){
+  start = Partition[Partition$Gene == gene, "Start"]
+  end = Partition[Partition$Gene == gene, "End"]
+  gene_al = paste0(gene, "_alignment")
+  assign(gene_al, 
+         extract.sites(Alignment, sites = start:end))
+}
 
-DF = cbind(RawDistance, TSTV)
+Final_DF = data.frame(RawDistance = NULL, value = NULL, 
+                      Type = NULL, Gene = NULL)
 
-g_TSTV = ggplot(DF, aes(x = RawDistance, y = value, color = Type)) + 
+for(alignment in ls(pattern = "_alignment")){
+  alignment_get = get(alignment)
+  distdna = dist.dna(as.DNAbin(alignment_get), model="raw")
+  distdna_TS = dist.dna(as.DNAbin(alignment_get), model="TS")
+  distdna_TV = dist.dna(as.DNAbin(alignment_get), model="TV")
+  
+  distdnaDF = reshape2::melt(as.matrix(distdna))
+  distdna_TSDF = reshape2::melt(as.matrix(distdna_TS))
+  distdna_TVDF = reshape2::melt(as.matrix(distdna_TV))
+  
+  RawDistance = c(distdnaDF$value, distdnaDF$value)
+  TS = distdna_TSDF$value
+  TS = as.data.frame(TS)
+  colnames(TS) = "value"
+  TS$Type = "Transitions"
+  TV = distdna_TVDF$value
+  TV = as.data.frame(TV)
+  colnames(TV) = "value"
+  TV$Type = "Transversions"
+  TSTV = rbind(TS, TV)
+  
+  DF = cbind(RawDistance, TSTV)
+  DF$Gene = gsub("_alignment", "", alignment)
+  
+  Final_DF = rbind(Final_DF, DF)
+}
+
+
+g_TSTV = ggplot(Final_DF, aes(x = RawDistance, y = value, color = Type)) + 
   geom_point() + 
-  theme_minimal() + 
+  geom_smooth(method = "glm") +
   labs(x = "Raw Genetic Distance", 
-       y = "Transitions/Transversions")
+       y = "Transitions/Transversions") + 
+  facet_wrap(facets = vars(Gene), scales = "free") + 
+  theme(legend.position = c(0.8, 0.1))
 
 ggsave(plot = g_TSTV, filename = "GeneSaturationTest.pdf", device = "pdf", 
-       dpi = 300, width = 16, height = 9, units = "cm")
+       dpi = 300, width = 16, height = 16, units = "cm")
 ggsave(plot = g_TSTV, filename = "GeneSaturationTest.png", device = "png", 
-       dpi = 300, width = 16, height = 9, units = "cm")
+       dpi = 300, width = 16, height = 16, units = "cm")
 ggsave(plot = g_TSTV, filename = "GeneSaturationTest.jpeg", device = "jpeg", 
-       dpi = 300, width = 16, height = 9, units = "cm")
+       dpi = 300, width = 16, height = 16, units = "cm")
 ```
 
