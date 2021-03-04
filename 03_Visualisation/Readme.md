@@ -154,7 +154,7 @@ plot(obj_aligned,
 par(family = "DejaVu Sans")
 legend(43.5, 63, legend = c(expression(italic("bilineata")), "Adriatic",
                           expression(italic("viridis")), 
-                          "Turkey", "Outgroups"), 
+                          "Turkish", "Outgroups"), 
        pt.bg = c(viridis(4, end = 0.9), "white"),
        col = "black", 
        title = expression(bold(bolditalic("Lacerta")*" clades")),
@@ -202,7 +202,7 @@ g = ggtree(Nt_Tree_phylo, size = 1.1) +
                   offset = 0.25, barsize = 2, 
                   family = "DejaVu Sans") +
   geom_cladelabel(node = 30, extend = 0.25, 
-                  label = expression(bold("Turkey clade")), 
+                  label = expression(bold("Turkish clade")), 
                   align = T, 
                   geom = "label", fill = viridis(4, end = 0.9)[4], 
                   color = c(viridis(4, end = 0.9)[4], "white"), 
@@ -241,7 +241,7 @@ g = ggtree(Nt_Tree_phylo, size = 1.1) +
            label = expression(paste(atop("9004" , 1), atop("_TL" , 2), atop("_TR" , 3))), 
            parse = T, hjust = 0, family = "DejaVu Sans Mono", size = 4) + 
   annotate("text", x = 0, y = 27.5, 
-           label = "1: Genbank/Tissuecollection ID\n2: Clade (Lb bilineata, Lv viridis, AL adriatic, TL Turkey)\n3: ISO Country Code", 
+           label = "1: Genbank/Tissuecollection ID\n2: Clade (Lb bilineata, Lv viridis, AL adriatic, TL Turkish)\n3: ISO Country Code", 
            hjust = 0, family = "DejaVu Sans", size = 4)
 
 
@@ -290,13 +290,20 @@ for (i in seq(1:length(Bayes_Tree_phylo$tip.label))){
 }
 colo_Bayes[is.na(colo_Bayes)] = "black"
 
+q <- ggtree(Bayes_Tree_phylo)
+d <- q$data
+d <- d[!d$isTip,]
+d$label <- round(as.numeric(d$label), digits = 2)
+d <- d[d$label < 1,]
+d$label = gsub("0", "", d$label)
+
 g_Bayes = ggtree(Bayes_Tree_phylo, size = 1.1) + 
   geom_tiplab(align = T, hjust = 1, linetype = "dotted", 
               fontface = "bold", offset = 0.2, 
               geom = "label", color = colo_Bayes, fill = "white", 
               family = "DejaVu Sans Mono", size = 4.5) + 
   geom_nodepoint(aes(color = as.numeric(label)), size = 4.5) + 
-  geom_text2(aes(label=label, subset = !is.na(as.numeric(label)) & as.numeric(label) < 1), color = "white", size = 2) +
+  geom_text2(data = d, aes(label=label, subset = !is.na(as.numeric(label)) & as.numeric(label) < 1), color = "white", size = 2) +
   scale_color_viridis_c(option = "cividis", limits = c(0, 1), 
                         direction = -1, name = "Posterior\nProbability", 
                         na.value = NA) +
@@ -306,7 +313,7 @@ g_Bayes = ggtree(Bayes_Tree_phylo, size = 1.1) +
                   offset = 0.3, barsize = 2, 
                   family = "DejaVu Sans") +
   geom_cladelabel(node = 46, extend = 0.5, 
-                  label = expression(bold("Turkey clade")), 
+                  label = expression(bold("Turkish clade")), 
                   align = T, 
                   geom = "label", fill = viridis(4, end = 0.9)[4], 
                   color = c(viridis(4, end = 0.9)[4], "white"), 
@@ -367,7 +374,7 @@ g_Bayes_clado = ggtree(Bayes_Tree_clado, size = 1.1) +
                   offset = 5.3, barsize = 2, 
                   family = "DejaVu Sans") +
   geom_cladelabel(node = 46, extend = 0.5, 
-                  label = expression(bold("Turkey clade")), 
+                  label = expression(bold("Turkish clade")), 
                   align = T, 
                   geom = "label", fill = viridis(4, end = 0.9)[4], 
                   color = c(viridis(4, end = 0.9)[4], "white"), 
@@ -425,7 +432,7 @@ plot(obj_aligned,
 par(family = "DejaVu Sans")
 legend(43.5, 63, legend = c(expression(italic("bilineata")), "Adriatic",
                           expression(italic("viridis")), 
-                          "Turkey", "Outgroups"), 
+                          "Turkish", "Outgroups"), 
        pt.bg = c(viridis(4, end = 0.9), "white"),
        col = "black", 
        title = expression(bold("Lacerta lineages")),
@@ -481,7 +488,7 @@ distmat_melted$HeatmapValue = ifelse(distmat_melted$value > 8.5,
 
 # get rectangle positions for each lineage
 rectdata = data.frame(Clade = c("Lacerta viridis", 
-                                    "Turkey clade", 
+                                    "Turkish clade", 
                                     "Lacerta bilineata", 
                                     "Adriatic clade", 
                                     "Outgroups"), 
@@ -491,8 +498,8 @@ rectdata = data.frame(Clade = c("Lacerta viridis",
 rectdata[rectdata$Clade == "Lacerta viridis", "xminval"] = min(which(grepl("Lv_", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
 rectdata[rectdata$Clade == "Lacerta viridis", "xmaxval"] = max(which(grepl("Lv_", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
 
-rectdata[rectdata$Clade == "Turkey clade", "xminval"] = min(which(grepl("TL_", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
-rectdata[rectdata$Clade == "Turkey clade", "xmaxval"] = max(which(grepl("TL_", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
+rectdata[rectdata$Clade == "Turkish clade", "xminval"] = min(which(grepl("TL_", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
+rectdata[rectdata$Clade == "Turkish clade", "xmaxval"] = max(which(grepl("TL_", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
 
 rectdata[rectdata$Clade == "Lacerta bilineata", "xminval"] = min(which(grepl("Lb_", head(distmat_melted, n = 25)$Var1, perl = T)))-0.5
 rectdata[rectdata$Clade == "Lacerta bilineata", "xmaxval"] = max(which(grepl("Lb_", head(distmat_melted, n = 25)$Var1, perl = T)))+0.5
@@ -524,11 +531,11 @@ d = ggplot(distmat_melted) +
                      breaks = seq(0, 8, by = 2), 
                      labels = c(0, 2, 4, 6, ">8"), 
                      name = "Uncorrected\np distance (%)") +
-  scale_color_manual(limits = c("Outgroups", "Turkey clade", 
+  scale_color_manual(limits = c("Outgroups", "Turkish clade", 
                                 "Lacerta viridis", 
                                 "Adriatic clade", 
                                 "Lacerta bilineata"),
-                     labels = c("Outgroups", "Turkey clade", 
+                     labels = c("Outgroups", "Turkish clade", 
                                 expression(italic("Lacerta viridis")), 
                                 "Adriatic clade", 
                                 expression(italic("Lacerta bilineata"))), 
@@ -645,7 +652,7 @@ t = ggtree(Nt_Tree, size = 1.1) +
                   offset = 5.25, barsize = 2, 
                   family = "DejaVu Sans") +
   geom_cladelabel(node = 30, extend = 0.25, 
-                  label = expression(bold("Turkey clade")), 
+                  label = expression(bold("Turkish clade")), 
                   align = T, 
                   geom = "label", fill = viridis(4, end = 0.9)[4], 
                   color = c(viridis(4, end = 0.9)[4], "white"), 
@@ -766,12 +773,16 @@ unconstr = read.tree("../02_TopologyConstrainAnalysis/Unconstrained.nwk")
 VirTurkConstr = read.tree("../02_TopologyConstrainAnalysis/ViridisTurkeyMonophylyConstrain.nwk")
 VirAdriConstr = read.tree("../02_TopologyConstrainAnalysis/ViridisAdriaticMonophylyConstrain.nwk")
 
+unconstr$tip.label = gsub("_", " ", unconstr$tip.label)
+VirTurkConstr$tip.label = gsub("_", " ", VirTurkConstr$tip.label)
+VirAdriConstr$tip.label = gsub("_", " ", VirAdriConstr$tip.label)
+
 g_unconstr = ggtree(unconstr, size = 0.6) + 
-  geom_tiplab() + ggplot2::xlim(0, 10)
+  geom_tiplab(aes(fontface = ifelse(grepl("L\\.", label), "italic", "plain"))) + ggplot2::xlim(0, 10)
 g_VirTurkConstr = ggtree(VirTurkConstr, size = 0.6) + 
-  geom_tiplab() + ggplot2::xlim(0, 10)
+  geom_tiplab(aes(fontface = ifelse(grepl("L\\.", label), "italic", "plain"))) + ggplot2::xlim(0, 10)
 g_VirAdriConstr = ggtree(VirAdriConstr, size = 0.6) + 
-  geom_tiplab() + ggplot2::xlim(0, 10)
+  geom_tiplab(aes(fontface = ifelse(grepl("L\\.", label), "italic", "plain"))) + ggplot2::xlim(0, 10)
 
 ConstrDataFrame = as.data.frame(read.csv("../02_TopologyConstrainAnalysis/ConstrainedDataframeForR.tsv", sep = "\t", header = T))
 ```
@@ -790,13 +801,13 @@ combiConstrWithDF = ggarrange(combiConstr, g_ConstrDF,
                               ncol = 1, nrow = 2)
 
 ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.pdf", 
-       dpi = 300, device = "pdf", width = 18, height = 6, units = "cm")
+       dpi = 300, device = "pdf", width = 18, height = 8, units = "cm")
 ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.png", 
-       dpi = 300, device = "png", width = 18, height = 6, units = "cm")
+       dpi = 300, device = "png", width = 18, height = 8, units = "cm")
 ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.jpeg", 
-       dpi = 300, device = "jpeg", width = 18, height = 6, units = "cm")
+       dpi = 300, device = "jpeg", width = 18, height = 8, units = "cm")
 ggsave(plot = combiConstrWithDF, filename = "ConstrainedTopologyScheme.tiff", 
-       dpi = 300, device = "tiff", width = 18, height = 6, units = "cm", 
+       dpi = 300, device = "tiff", width = 18, height = 8, units = "cm", 
        compression = "lzw")
 
 combiConstrWithDF
