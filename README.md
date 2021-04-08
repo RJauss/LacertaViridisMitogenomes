@@ -2,7 +2,7 @@
 
 Welcome to the **Lacerta viridis mitogenome** repository!
 
-This repository is a collection of several scripts and mini-tutorials guiding you through the methods and analyses which were performed in the paper by [Solf & Jauss et al., 2020]().
+This repository is a collection of several scripts and mini-tutorials guiding you through the methods and analyses which were performed in the paper by [Jauss et al., 2021](https://doi.org/10.1080/14772000.2021.1912205).
 
 The raw data can be downloaded [here](), plots and figures were generated with the final trees and miscellaneous files accessible in the folder [00_Data](00_Data/). 
 
